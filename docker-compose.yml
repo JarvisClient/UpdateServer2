@@ -1,0 +1,12 @@
+version: '3'
+services:
+  jarvis-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - GITHUB_API_USERNAME=JarvisClient
+      - GITHUB_API_REPOSITORY=Client
+      - GITHUB_API_TOKEN=github_pat_TOKEN
+    ports:
+      - "3060:8080"
