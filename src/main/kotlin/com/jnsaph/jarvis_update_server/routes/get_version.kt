@@ -39,9 +39,9 @@ fun Route.getVersionRoute() {
 
             for (asset in response.assets) {
                 val platform = when {
-                    asset.name.contains("windows", true) -> "windows"
-                    asset.name.contains("mac", true) -> "mac"
-                    asset.name.contains("linux", true) -> "linux"
+                    asset.name.contains("windows", true) -> "windows-x86_64"
+                    asset.name.contains("mac", true) -> "darwin-x86_64"
+                    asset.name.contains("linux", true) -> "linux-x86_64"
                     else -> continue // Skip assets that don't match any platform
                 }
 
