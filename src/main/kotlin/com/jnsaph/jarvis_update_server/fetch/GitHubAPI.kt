@@ -6,6 +6,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class GitHubAPI(
@@ -14,9 +15,11 @@ class GitHubAPI(
     private val accessToken: String
 ) {
     private val baseUrl = "https://api.github.com/repos/$username/$repository"
-    private val httpClient = HttpClient(CIO) {
+    private val httpClient = HttpClient(CIO)
 
-    }
+    // Configure Json to ignore unknown keys
+    private val json = Json { ignoreUnknownKeys = true }
+
     init {
         require(username.isNotEmpty() && repository.isNotEmpty() && accessToken.isNotEmpty()) {
             if (username.isEmpty()) println("GITHUB_API_USERNAME is not set.")
@@ -29,7 +32,7 @@ class GitHubAPI(
         val url = "$baseUrl/releases/latest"
 
         try {
-            // make request with header and auth
+            // Make request with header and auth
             val response: HttpResponse = httpClient.get(url) {
                 header("Authorization", "token $accessToken")
             }
@@ -38,9 +41,9 @@ class GitHubAPI(
             if (response.status == HttpStatusCode.OK) {
                 // Deserialize response body to GitHubReleaseResponse
                 val responseBody = response.bodyAsText()
-                return Json.decodeFromString<GitHubReleaseResponse>(responseBody)
+                return json.decodeFromString<GitHubReleaseResponse>(responseBody)
             } else {
-                throw Exception("Invalid response code")
+                throw Exception("Invalid response code: ${response.status}")
             }
 
         } catch (e: Exception) {
