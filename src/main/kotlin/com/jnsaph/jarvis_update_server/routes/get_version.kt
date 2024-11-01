@@ -58,6 +58,8 @@ fun Route.getVersionRoute() {
                 platformDownloadLinks
             ))
         } catch (e: Exception) {
+            call.application.environment.log.error("Error occurred while fetching the latest release", e)
+            
             call.respond(ResponseData("error", "Internal server error"))
         }
     }
